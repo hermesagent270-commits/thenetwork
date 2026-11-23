@@ -90,28 +90,19 @@ export function normalizeFractionalAgeInitialism(text: string): string {
 }
 
 /**
- * True when `prefix` (the text before an age) leaves a quotation open, so the age is inside it
- * (`she said "I'm 15"`, `"I'm 15"`). Apostrophes in "I'm" and "don't", and a foot mark (`5'6`, `5'`),
- * are not quotes. A quote that has closed is not open: `he said "hi" I'm 15` is a real age.
+ * True when `prefix` (the text before an age) leaves a double quotation open, so the age is inside it
+ * (`she said "I'm 15"`, `"I'm 15"`). An apostrophe is never a quote: `I'm`, `'cause`, `'sup`, `'em`,
+ * `class of '27` and a foot mark (`5'6`) leave the age the sender's. An inch mark (`5'6"`) is not a
+ * quote either. A quote that has closed is not open: `he said "hi" I'm 15` is a real age.
  */
 export function quoteStillOpen(prefix: string): boolean {
-  let double = false, single = false;
+  let open = false;
   for (let i = 0; i < prefix.length; i++) {
-    const c = prefix[i]!;
-    const prev = i > 0 ? prefix[i - 1]! : "";
-    const next = i + 1 < prefix.length ? prefix[i + 1]! : "";
-    if (c === "\"") {
-      // 6" is inches, unless this mark closes a quote that is already open.
-      if (!double && /[0-9]/.test(prev)) continue;
-      double = !double;
-      continue;
-    }
-    if (c !== "'") continue;
-    if (/[a-z0-9]/.test(prev) && /[a-z0-9]/.test(next)) continue;
-    if (!single && (/[0-9]/.test(prev) || /[a-z]/.test(prev))) continue;
-    single = !single;
+    if (prefix[i] !== "\"") continue;
+    if (!open && /[0-9]/.test(prefix[i - 1] ?? "")) continue;
+    open = !open;
   }
-  return double || single;
+  return open;
 }
 
 export const AGE_LOOSE_TAIL = "and\\b(?!\\s+(?:\\d|(?:a|one)\\s+half\\b))|now\\b|too\\b";

@@ -315,13 +315,14 @@ function allMatches(rx: RegExp, text: string): RegExpExecArray[] {
 
 /**
  * The age is not the sender's age today when a not-now word sits immediately before it in the same
- * clause, or when the age is still inside a quote. Quote state is read from the whole message, so
- * a period inside quotes (`"Hey." I'm 15.`) does not turn the closing quote into a new opener.
+ * clause, or when the age sits inside a double quote that closes later in the message. Quote state
+ * is read from the whole message, so a period inside quotes (`"Hey." I'm 15.`) does not turn the
+ * closing quote into a new opener.
  * The word lookbehind stops at the previous clause, so that closer cannot cancel the next statement.
  */
 function notNowBefore(text: string, at: number): boolean {
   const before = text.slice(0, at);
-  if (quoteStillOpen(before)) return true;
+  if (quoteStillOpen(before) && text.includes("\"", at)) return true;
   let from = 0;
   CLAUSE_BREAK.lastIndex = 0;
   for (const m of before.matchAll(CLAUSE_BREAK)) from = m.index! + m[0].length;
