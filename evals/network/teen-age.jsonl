@@ -185,6 +185,7 @@
 {"text":"He said \"hi\" I'm 15","teen":true,"age":15}
 {"text":"\"Hey\" I'm 15","teen":true,"age":15}
 {"text":"\"Hey.\" I'm 15.","teen":true,"age":15}
+{"text":"can't go 'cause I'm 15","teen":true,"age":15}
 {"text":"I'm 28. I'm 15 minutes away.","teen":false,"age":28}
 {"text":"I'm 40. I'm 12 years into this career.","teen":false,"age":40}
 {"text":"she said \"I'm 15\"","teen":false}
